@@ -1,32 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import LoginView from '@/views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import BoardsListView from '@/views/BoardsListView.vue'
+import BoardEditorView from '@/views/BoardEditorView.vue'
 
 const routes = [
-  { path: '/login', component: () => import('@/views/LoginView.vue') },
-  { path: '/register', component: () => import('@/views/RegisterView.vue') },
-  { 
-    path: '/boards', 
-    component: () => import('@/views/BoardsListView.vue'),
-    meta: { requiresAuth: true }
-  },
-  { 
-    path: '/board/:hash', 
-    component: () => import('@/views/BoardEditorView.vue'),
-    props: true
-  },
-  { path: '/', redirect: '/boards' }
+  { path: '/login', component: LoginView },
+  { path: '/', component: LoginView },
+  { path: '/register', component: RegisterView },
+  { path: '/boards', component: BoardsListView },
+  { path: '/board/:hash', component: BoardEditorView, props: true }
 ]
 
-const router = createRouter({
+export default createRouter({
   history: createWebHistory(),
   routes
 })
-
-router.beforeEach((to) => {
-  const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.token) {
-    return '/login'
-  }
-})
-
-export default router
