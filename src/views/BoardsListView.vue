@@ -1,14 +1,23 @@
+<script setup>
+import { useBoards } from '@/stores/board';
+
+const board = useBoards()
+
+</script>
+
 <template>
     <div class="boards__list">
         <div class="container">
             <header>
-                <span class="btn">Создать доску</span>
+                <span @click="board.createBoard()" class="btn">Создать доску</span>
                 <span class="btn">Фильтр по лайкам</span>
             </header>
             <div class="board--wrapper">
-                <div class="board">
-                    <span class="board__name">Доска 1</span>
-                    <span class="board__btn">Редактировать</span>
+                <div v-for="b in board.boards" :key="b.id" class="board">
+                    <span class="board__name">{{ b.title }}</span>
+                    <router-link :to="`/board/${b.hash}`">
+                        <span class="board__btn">Редактировать</span>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -24,13 +33,13 @@
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%; 
-  padding: 15px 0;
-  gap: 20px; 
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 0;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .container {
