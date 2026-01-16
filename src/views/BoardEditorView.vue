@@ -5,16 +5,16 @@
         </router-link>
         <div class="canvas__instruments">
             <div class="instrument">
-                <button @click="createObject()" class="card">
+                <button @click="createObject('block')" class="card">
                     🟥
                 </button>
-                <button class="card">
+                <button @click="createObject('shape')" class="card">
                     🔴
                 </button>
-                <button class="card">
+                <button @click="createObject('line')" class="card">
                     〰️
                 </button>
-                <button class="card">
+                <button @click="createObject('text')" class="card">
                     T
                 </button>
                 <button class="card">
@@ -28,6 +28,18 @@
         <div class="canvas" ref="canvas" @mousemove="onMouseMove" @mouseup="onMouseUp">
             <div v-for="block in blocks" :key="block.id" class="block"
                 :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
+            <div v-for="block in shapes" :key="block.id" class="shape"
+                :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
+            <div v-for="block in lines" :key="block.id" class="line"
+                :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
+            <div v-for="block in texts" :key="block.id" class="text"
+                :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"
+                contenteditable="true" >
+                {{ block.text }}
+            </div>
+
+
+
         </div>
 
 
@@ -36,9 +48,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 const blocks = ref([])
+const shapes = ref([])
+const lines = ref([])
+const texts = ref([])
 
 const draggingBlock = ref(null)
 const offsetX = ref(0)
@@ -46,21 +61,52 @@ const offsetY = ref(0)
 
 const canvas = ref(null)
 
-function createObject() {
-    const newBlock = {
-        id: Date.now(),
-        x: 50,
-        y: 50
-    };
-    blocks.value.push(newBlock);
+function createObject(name) {
+    if (name == "block") {
+        const newBlock = {
+            id: Date.now(),
+            x: 50,
+            y: 50
+        };
+        blocks.value.push(newBlock);
+    }
+
+    if (name == "shape") {
+        const newShape = {
+            id: Date.now(),
+            x: 50,
+            y: 50
+        };
+        shapes.value.push(newShape);
+    }
+
+    if (name == "line") {
+        const newLine = {
+            id: Date.now(),
+            x: 50,
+            y: 50
+        };
+        lines.value.push(newLine);
+    }
+
+    if (name == "text") {
+        const newText = {
+            id: Date.now(),
+            x: 50,
+            y: 50,
+            text: 'Новый текст'
+        };
+        texts.value.push(newText);
+    }
 }
 
 function startDrag(block, event) {
     draggingBlock.value = block;
 
-    const rect = event.target.getBoundingClientRect()
-    offsetX.value = event.clientX - rect.left
-    offsetY.value = event.clientY - rect.top
+    const rect = event.target.getBoundingClientRect();
+    offsetX.value = event.clientX - rect.left;
+    offsetY.value = event.clientY - rect.top;
+
 }
 
 function onMouseMove(event) {
@@ -69,7 +115,7 @@ function onMouseMove(event) {
 
     let newX = event.clientX - canvasRect.left - offsetX.value
     let newY = event.clientY - canvasRect.top - offsetY.value
-    console.log(event.clientX)
+
 
     const blockWidth = 100;
     const blockHeight = 100;
@@ -96,6 +142,37 @@ function onMouseUp() {
     cursor: move;
     user-select: none;
 }
+
+::v-deep .shape {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgb(255, 0, 0);
+    cursor: move;
+    user-select: none;
+    border-radius: 50%;
+}
+
+::v-deep .line {
+    position: absolute;
+    width: 10px;
+    height: 100px;
+    background: rgb(2, 136, 35);
+    cursor: move;
+    user-select: none;
+}
+
+::v-deep .text {
+    position: absolute;
+    padding: 5px;
+    min-width: 50px;
+    color: #667eea;
+    cursor: move;
+    user-select: none;
+    font-size: 20px;
+    white-space: nowrap;
+}
+
 
 .btn {
     padding: 16px 24px;
