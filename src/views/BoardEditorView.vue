@@ -27,14 +27,18 @@
 
         <div class="canvas" ref="canvas" @mousemove="onMouseMove" @mouseup="onMouseUp">
             <div v-for="block in blocks" :key="block.id" class="block"
-                :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
+                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)` }"
+                @wheel.prevent="rotateBlock(block, $event)" @mousedown="startDrag(block, $event)">
+            </div>
+
             <div v-for="block in shapes" :key="block.id" class="shape"
                 :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
             <div v-for="block in lines" :key="block.id" class="line"
-                :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
+                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)` }"
+                @wheel.prevent="rotateBlock(block, $event)" @mousedown="startDrag(block, $event)"></div>
             <div v-for="block in texts" :key="block.id" class="text"
                 :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"
-                contenteditable="true" >
+                contenteditable="true">
                 {{ block.text }}
             </div>
 
@@ -66,7 +70,8 @@ function createObject(name) {
         const newBlock = {
             id: Date.now(),
             x: 50,
-            y: 50
+            y: 50,
+            deg: 0
         };
         blocks.value.push(newBlock);
     }
@@ -84,7 +89,8 @@ function createObject(name) {
         const newLine = {
             id: Date.now(),
             x: 50,
-            y: 50
+            y: 50,
+            deg: 0
         };
         lines.value.push(newLine);
     }
@@ -108,6 +114,13 @@ function startDrag(block, event) {
     offsetY.value = event.clientY - rect.top;
 
 }
+
+
+function rotateBlock(block, event) {
+    const delta = event.deltaY > 0 ? 10 : -10;
+    block.deg += delta;
+}
+
 
 function onMouseMove(event) {
 
