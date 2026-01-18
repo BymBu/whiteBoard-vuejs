@@ -27,9 +27,18 @@
 
         <div class="canvas" ref="canvas" @mousemove="onMouseMove" @mouseup="onMouseUp">
             <div v-for="block in blocks" :key="block.id" class="block"
-                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)` }"
+                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)`, height: block.size + 'px', width: block.size + 'px', background: selectedColor }"
+                @mouseenter="updateSize(block, $event)" @mouseleave="hideControls(block)"
                 @wheel.prevent="rotateBlock(block, $event)" @mousedown="startDrag(block, $event)">
+                <div class="block__size" :style="{ display: block.showControls ? 'flex' : 'none' }">
+                    <span @click="increaseSize(block)">+</span>
+                    <span @click="decreaseSize(block)">–</span>
+                    <span>
+                        <input v-model="selectedColor" type="color">
+                    </span>
+                </div>
             </div>
+
 
             <div v-for="block in shapes" :key="block.id" class="shape"
                 :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
@@ -54,16 +63,21 @@
 <script setup>
 import { ref } from 'vue'
 
+// возможности доски
 const blocks = ref([])
 const shapes = ref([])
 const lines = ref([])
 const texts = ref([])
 
+// позиция и выделенный блок
 const draggingBlock = ref(null)
 const offsetX = ref(0)
 const offsetY = ref(0)
 
 const canvas = ref(null)
+
+// для цвета блоков
+const selectedColor = ref('#000000')
 
 function createObject(name) {
     if (name == "block") {
@@ -71,7 +85,9 @@ function createObject(name) {
             id: Date.now(),
             x: 50,
             y: 50,
-            deg: 0
+            deg: 0,
+            size: 100,
+            showControls: false
         };
         blocks.value.push(newBlock);
     }
@@ -121,14 +137,31 @@ function rotateBlock(block, event) {
     block.deg += delta;
 }
 
+function updateSize(block) {
+    block.showControls = true;
+}
+
+function hideControls(block) {
+    block.showControls = false;
+}
+
+function increaseSize(block) {
+    block.size += 10;
+}
+
+function decreaseSize(block) {
+    block.size -= 10;
+
+}
+
+
 
 function onMouseMove(event) {
-
+    if (!draggingBlock.value) return;
     const canvasRect = canvas.value.getBoundingClientRect()
 
     let newX = event.clientX - canvasRect.left - offsetX.value
     let newY = event.clientY - canvasRect.top - offsetY.value
-
 
     const blockWidth = 100;
     const blockHeight = 100;
@@ -185,6 +218,25 @@ function onMouseUp() {
     font-size: 20px;
     white-space: nowrap;
 }
+
+::v-deep .block__size {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding: 4px 5px;
+}
+
+::v-deep .block__size span {
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
 
 
 .btn {
