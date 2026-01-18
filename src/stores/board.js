@@ -24,21 +24,13 @@ export const useBoards = defineStore("boards", {
       return newBoard.hash;
     },
 
-    getBoardByHash(hash) {
-      return this.boards.find((board) => board.hash === hash);
+    deleteBoard(id) {
+      this.boards = this.boards.filter((board) => board.id !== id);
+      this.save();
     },
 
-    addOrUpdateObject(hash, obj) {
-      const board = this.getBoardByHash(hash);
-      if (!board) return;
-
-      const existingIndex = board.objects.findIndex((o) => o.id === obj.id);
-      if (existingIndex >= 0) {
-        board.objects[existingIndex] = obj;
-      } else {
-        board.objects.push(obj);
-      }
-      this.save();
+    getBoardByHash(hash) {
+      return this.boards.find((board) => board.hash === hash);
     },
 
     save() {

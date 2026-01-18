@@ -18,6 +18,7 @@ const board = useBoards()
                     <router-link :to="`/board/${b.hash}`">
                         <span class="board__btn">Редактировать</span>
                     </router-link>
+                    <span @click="board.deleteBoard(b.id)" class="board__btn">Удалить</span>
                 </div>
             </div>
         </div>
