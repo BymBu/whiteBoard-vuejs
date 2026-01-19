@@ -29,8 +29,19 @@ export const useBoards = defineStore("boards", {
       this.save();
     },
 
+    saveBoard(id, obj) {
+      const board = this.boards.find((board) => board.id == id);
+      board.objects.push(obj);
+      this.save();
+    },
+
     getBoardByHash(hash) {
       return this.boards.find((board) => board.hash === hash);
+    },
+
+    // Установка ID доски
+    setCurrentId(id) {
+      this.currentBoardId = id;
     },
 
     save() {
