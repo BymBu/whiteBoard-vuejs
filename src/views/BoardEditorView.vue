@@ -3,6 +3,7 @@
         <router-link to="/boards">
             <span class="btn">Вернуться назад</span>
         </router-link>
+        <span @click="saveBoard()" class="btn">Сохранить доску</span>
         <div class="canvas__instruments">
             <div class="instrument">
                 <button @click="createObject('block')" class="card">
@@ -24,7 +25,6 @@
             </div>
 
         </div>
-
         <div class="canvas" ref="canvas" @mousemove="onMouseMove" @mouseup="onMouseUp">
             <div v-for="block in blocks" :key="block.id" class="block"
                 :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)`, height: block.size + 'px', width: block.size + 'px', background: selectedColor }"
@@ -51,17 +51,38 @@
                 {{ block.text }}
             </div>
 
-
-
         </div>
-
-
     </div>
 
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { useBoards } from '@/stores/board'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const board = useBoards()
+
+// hash доски
+const hash = route.params.hash
+
+// текущая доска
+const currentBoard = ref(null)
+
+// загрузка обьектов
+onMounted(() => {
+    currentBoard.value = board.getBoardByHash(hash)
+
+    if (currentBoard.value) {
+        const boardObjects = currentBoard.value.objects || []
+
+        blocks.value = boardObjects.filter(obj => obj.type === 'block') || []
+        shapes.value = boardObjects.filter(obj => obj.type === 'shape') || []
+        lines.value = boardObjects.filter(obj => obj.type === 'line') || []
+        texts.value = boardObjects.filter(obj => obj.type === 'text') || []
+    }
+})
 
 // возможности доски
 const blocks = ref([])
@@ -74,10 +95,25 @@ const draggingBlock = ref(null)
 const offsetX = ref(0)
 const offsetY = ref(0)
 
+// холст
 const canvas = ref(null)
 
 // для цвета блоков
 const selectedColor = ref('#000000')
+
+// Сохранение доски
+function saveBoard() {
+    if (!currentBoard.value) return
+
+    const allObjects = [
+        ...blocks.value.map(b => ({ ...b, type: 'block' })),
+        ...shapes.value.map(s => ({ ...s, type: 'shape' })),
+        ...lines.value.map(l => ({ ...l, type: 'line' })),
+        ...texts.value.map(t => ({ ...t, type: 'text' }))
+    ]
+
+    board.saveBoard(currentBoard.value.id, allObjects)
+}
 
 function createObject(name) {
     if (name == "block") {
@@ -87,7 +123,8 @@ function createObject(name) {
             y: 50,
             deg: 0,
             size: 100,
-            showControls: false
+            showControls: false,
+            type: 'block'
         };
         blocks.value.push(newBlock);
     }
@@ -96,7 +133,8 @@ function createObject(name) {
         const newShape = {
             id: Date.now(),
             x: 50,
-            y: 50
+            y: 50,
+            type: 'shape'
         };
         shapes.value.push(newShape);
     }
@@ -106,7 +144,8 @@ function createObject(name) {
             id: Date.now(),
             x: 50,
             y: 50,
-            deg: 0
+            deg: 0,
+            type: 'line'
         };
         lines.value.push(newLine);
     }
@@ -116,7 +155,8 @@ function createObject(name) {
             id: Date.now(),
             x: 50,
             y: 50,
-            text: 'Новый текст'
+            text: 'Новый текст',
+            type: 'text'
         };
         texts.value.push(newText);
     }
