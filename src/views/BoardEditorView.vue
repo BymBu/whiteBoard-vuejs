@@ -115,6 +115,7 @@ function saveBoard() {
     board.saveBoard(currentBoard.value.id, allObjects)
 }
 
+// создать обьект
 function createObject(name) {
     if (name == "block") {
         const newBlock = {
@@ -162,6 +163,7 @@ function createObject(name) {
     }
 }
 
+// движение блока
 function startDrag(block, event) {
     draggingBlock.value = block;
 
@@ -195,7 +197,7 @@ function decreaseSize(block) {
 }
 
 
-
+// движение блока
 function onMouseMove(event) {
     if (!draggingBlock.value) return;
     const canvasRect = canvas.value.getBoundingClientRect()
@@ -213,6 +215,7 @@ function onMouseMove(event) {
     draggingBlock.value.y = newY;
 }
 
+// конец движения блока
 function onMouseUp() {
     draggingBlock.value = null;
 }
