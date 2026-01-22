@@ -1,8 +1,13 @@
 <script setup>
 import { useBoards } from '@/stores/board';
+import { ref } from 'vue';
 
 const board = useBoards()
+const isSorted = ref(false)
 
+function toggleSort() {
+    isSorted.value = !isSorted.value
+}
 </script>
 
 <template>
@@ -10,15 +15,25 @@ const board = useBoards()
         <div class="container">
             <header>
                 <span @click="board.createBoard()" class="btn">Создать доску</span>
-                <span class="btn">Фильтр по лайкам</span>
+                <span @click="toggleSort()" class="btn"> {{ isSorted ? 'Отменить сортировку' : 'Сортировать' }}</span>
             </header>
             <div class="board--wrapper">
-                <div v-for="b in board.boards" :key="b.id" class="board">
+                <div v-for="b in (isSorted ? board.boardsSortedByLikes : board.boards)" :key="b.id" class="board">
                     <span class="board__name">{{ b.title }}</span>
-                    <router-link :to="`/board/${b.hash}`">
-                        <span class="board__btn">Редактировать</span>
-                    </router-link>
-                    <span @click="board.deleteBoard(b.id)" class="board__btn">Удалить</span>
+                    <div class="command--wrapper">
+                        <router-link :to="`/board/${b.hash}`">
+                            <span class="board__btn">Редактировать</span>
+                        </router-link>
+                        <span @click="board.deleteBoard(b.id)" class="board__btn">❌</span>
+                    </div>
+
+
+                    <div class="likes--wrapper">
+                        <span @click="board.likesBoard(b.hash)" class="btn">💖</span>
+                        <span class="btn">Лайков: {{ b.likes }}</span>
+
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -74,6 +89,16 @@ header {
     justify-content: center;
 }
 
+.command--wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.board__name {
+    font-size: 30px;
+}
+
 .board {
     display: flex;
     flex-direction: column;
@@ -99,6 +124,12 @@ header {
     cursor: pointer;
 }
 
+.likes--wrapper {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
 .btn {
     padding: 16px 24px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -108,5 +139,6 @@ header {
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    user-select: none;
 }
 </style>

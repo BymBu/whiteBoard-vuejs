@@ -173,6 +173,7 @@ function startDrag(block, event) {
 
 }
 
+// функции взаимодействия с блоками
 
 function rotateBlock(block, event) {
     const delta = event.deltaY > 0 ? 10 : -10;

@@ -9,6 +9,12 @@ export const useBoards = defineStore("boards", {
     boards: JSON.parse(localStorage.getItem("boards") || "[]"),
   }),
 
+  getters: {
+    boardsSortedByLikes(state) {
+      return [...state.boards].sort((a, b) => b.likes - a.likes);
+    },
+  },
+
   actions: {
     createBoard(title = "Новая доска") {
       const newBoard = {
@@ -17,6 +23,7 @@ export const useBoards = defineStore("boards", {
         title,
         createdAt: new Date().toISOString(),
         objects: [],
+        likes: 0,
       };
 
       this.boards.push(newBoard);
@@ -43,6 +50,12 @@ export const useBoards = defineStore("boards", {
 
     getBoardByHash(hash) {
       return this.boards.find((board) => board.hash === hash);
+    },
+
+    likesBoard(hash) {
+      const board = this.getBoardByHash(hash);
+      board.likes += 1;
+      this.save();
     },
 
     save() {
