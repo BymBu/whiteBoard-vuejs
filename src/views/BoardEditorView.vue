@@ -41,10 +41,33 @@
 
 
             <div v-for="block in shapes" :key="block.id" class="shape"
-                :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"></div>
+                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)`, height: block.size + 'px', width: block.size + 'px', background: selectedColor }"
+                @mouseenter="updateSize(block, $event)" @mouseleave="hideControls(block)"
+                @wheel.prevent="rotateBlock(block, $event)" @mousedown="startDrag(block, $event)">
+                <div class="block__size" :style="{ display: block.showControls ? 'flex' : 'none' }">
+                    <span @click="increaseSize(block)">+</span>
+                    <span @click="decreaseSize(block)">–</span>
+                    <span>
+                        <input v-model="selectedColor" type="color">
+                    </span>
+                </div>
+            </div>
+
+
             <div v-for="block in lines" :key="block.id" class="line"
-                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)` }"
-                @wheel.prevent="rotateBlock(block, $event)" @mousedown="startDrag(block, $event)"></div>
+                :style="{ left: block.x + 'px', top: block.y + 'px', transform: `rotate(${block.deg}deg)`, height: block.size + 'px', background: selectedColor }"
+                @mouseenter="updateSize(block, $event)" @mouseleave="hideControls(block)"
+                @wheel.prevent="rotateBlock(block, $event)" @mousedown="startDrag(block, $event)">
+                <div class="block__size" :style="{ display: block.showControls ? 'flex' : 'none' }">
+                    <span @click="increaseSize(block)">+</span>
+                    <span @click="decreaseSize(block)">–</span>
+                    <span>
+                        <input v-model="selectedColor" type="color">
+                    </span>
+                </div>
+            </div>
+
+
             <div v-for="block in texts" :key="block.id" class="text"
                 :style="{ left: block.x + 'px', top: block.y + 'px' }" @mousedown="startDrag(block, $event)"
                 contenteditable="true">
@@ -135,6 +158,9 @@ function createObject(name) {
             id: Date.now(),
             x: 50,
             y: 50,
+            deg: 0,
+            size: 100,
+            showControls: false,
             type: 'shape'
         };
         shapes.value.push(newShape);
@@ -146,6 +172,8 @@ function createObject(name) {
             x: 50,
             y: 50,
             deg: 0,
+            size: 100,
+            showControls: false,
             type: 'line'
         };
         lines.value.push(newLine);
@@ -224,43 +252,37 @@ function onMouseUp() {
 </script>
 
 <style scoped>
+::v-deep .block,
+::v-deep .shape,
+::v-deep .line {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+}
+
 ::v-deep .block {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    background: black;
-    cursor: move;
-    user-select: none;
+  background: black;
 }
 
 ::v-deep .shape {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    background: rgb(255, 0, 0);
-    cursor: move;
-    user-select: none;
-    border-radius: 50%;
+  background: rgb(255, 0, 0);
+  border-radius: 50%;
 }
 
 ::v-deep .line {
-    position: absolute;
-    width: 10px;
-    height: 100px;
-    background: rgb(2, 136, 35);
-    cursor: move;
-    user-select: none;
+  background: rgb(2, 136, 35);
+  width: 8px;
 }
 
 ::v-deep .text {
-    position: absolute;
-    padding: 5px;
-    min-width: 50px;
-    color: #667eea;
-    cursor: move;
-    user-select: none;
-    font-size: 20px;
-    white-space: nowrap;
+  position: absolute;
+  padding: 5px;
+  min-width: 50px;
+  color: #667eea;
+  cursor: move;
+  user-select: none;
+  font-size: 20px;
+  white-space: nowrap;
 }
 
 ::v-deep .block__size {
