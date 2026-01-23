@@ -18,7 +18,7 @@ function toggleSort() {
                 <span @click="toggleSort()" class="btn"> {{ isSorted ? 'Отменить сортировку' : 'Сортировать' }}</span>
             </header>
             <div class="board--wrapper">
-                <div v-for="b in (isSorted ? board.boardsSortedByLikes : board.boards)" :key="b.id" class="board">
+                <div v-for="b in (isSorted ? board.boardsSortedByLikes : board.boards)" :key="b.hash" class="board">
                     <span class="board__name">{{ b.title }}</span>
                     <div class="command--wrapper">
                         <router-link :to="`/board/${b.hash}`">

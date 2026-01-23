@@ -54,8 +54,10 @@ export const useBoards = defineStore("boards", {
 
     likesBoard(hash) {
       const board = this.getBoardByHash(hash);
-      board.likes += 1;
-      this.save();
+      if (board) {
+        board.likes += 1;
+        this.save();
+      }
     },
 
     save() {
