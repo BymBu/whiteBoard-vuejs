@@ -1,38 +1,50 @@
-# bestgames-whiteboard
+# 🖼️ WhiteBoard — Интерактивная доска
 
-This template should help get you started developing with Vue 3 in Vite.
+> Реализовано для участия в региональном этапе чемпионата **«Профессионалы» 2026**  
+> Компетенция: **Веб-технологии**
 
-## Recommended IDE Setup
+Современное SPA-приложение для создания, редактирования интерактивных досок.  
+Поддерживает работу с геометрическими фигурами, текстом, изображениями.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+![WhiteBoard Screenshot](./screenshot.png)
 
-## Recommended Browser Setup
+---
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## ✨ Возможности
 
-## Customize configuration
+- ✅ Создание досок с уникальной публичной ссылкой (`/board/:hash`)
+- ✅ Добавление объектов: **прямоугольник**, **круг**, **линия**, **текст**
+- ✅ Перемещение, поворот (колёсиком мыши), изменение размера
+- ✅ Сохранение состояния доски между сессиями
+- ✅ Система лайков и сортировка по популярности
+- ✅ Публичный доступ к доске — без авторизации
+- ✅ Авторизация и регистрация (мок-режим)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## 🛠 Технологии
 
-```sh
-npm install
+- **Frontend**: Vue 3 + Composition API
+- **State Management**: Pinia
+- **Routing**: Vue Router
+- **Сборка**: Vite
+- **Хранение**: localStorage (готово к замене на API)
+- **Стили**: Чистый CSS, BEM
+
+---
+
+## 📦 Установка и запуск
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/your-username/whiteboard.git
+   cd whiteboard
+   ```
+2. Установите зависимости:
 ```
-
-### Compile and Hot-Reload for Development
-
-```sh
+  npm install
+```
+3. Запустите dev режим
+```
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
 ```
