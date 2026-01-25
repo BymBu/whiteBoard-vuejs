@@ -1,9 +1,11 @@
 <template>
     <div class="canvas--wrapper">
-        <router-link to="/boards">
-            <span class="btn">Вернуться назад</span>
-        </router-link>
-        <span @click="saveBoard()" class="btn">Сохранить доску</span>
+        <div class="canvas__btn-wrapper">
+            <router-link to="/boards">
+                <span class="btn">Вернуться назад</span>
+            </router-link>
+            <span @click="saveBoard()" class="btn">Сохранить доску</span>
+        </div>
         <div class="canvas__instruments">
             <div class="instrument">
                 <button @click="createObject('block')" class="card">
@@ -255,34 +257,34 @@ function onMouseUp() {
 ::v-deep .block,
 ::v-deep .shape,
 ::v-deep .line {
-  position: absolute;
-  cursor: move;
-  user-select: none;
+    position: absolute;
+    cursor: move;
+    user-select: none;
 }
 
 ::v-deep .block {
-  background: black;
+    background: black;
 }
 
 ::v-deep .shape {
-  background: rgb(255, 0, 0);
-  border-radius: 50%;
+    background: rgb(255, 0, 0);
+    border-radius: 50%;
 }
 
 ::v-deep .line {
-  background: rgb(2, 136, 35);
-  width: 8px;
+    background: rgb(2, 136, 35);
+    width: 8px;
 }
 
 ::v-deep .text {
-  position: absolute;
-  padding: 5px;
-  min-width: 50px;
-  color: #667eea;
-  cursor: move;
-  user-select: none;
-  font-size: 20px;
-  white-space: nowrap;
+    position: absolute;
+    padding: 5px;
+    min-width: 50px;
+    color: #667eea;
+    cursor: move;
+    user-select: none;
+    font-size: 20px;
+    white-space: nowrap;
 }
 
 ::v-deep .block__size {
@@ -351,5 +353,16 @@ function onMouseUp() {
     height: 700px;
     box-shadow: 0px 5px 30px;
     border-radius: 5px;
+}
+.canvas__btn-wrapper a,
+.canvas__btn-wrapper span {
+  display: block; /* или inline-block */
+}
+
+.canvas__btn-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 30px;
 }
 </style>
